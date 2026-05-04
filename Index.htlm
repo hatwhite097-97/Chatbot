@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="sw">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat Bot Hospital</title>
+    <style>
+        /* MUONEKANO WA KISASA KABISA (LATEST UI) */
+        :root {
+            --bg-main: #ffffff;
+            --bg-sidebar: #171717;
+            --sidebar-hover: #2f2f2f;
+            --primary: #0f766e; 
+            --primary-hover: #0d5f58;
+            --user-bubble: #f4f4f4;
+            --text-main: #0d0d0d;
+            --text-light: #ececf1;
+            --border-color: #e5e5e5;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', system-ui, sans-serif; }
+
+        body, html { height: 100%; display: flex; flex-direction: column; overflow: hidden; background-color: var(--bg-main); color: var(--text-main); }
+
+        /* --- SCREEN 1: AUTHENTICATION --- */
+        #auth-screen {
+            position: fixed; inset: 0; background: #f9fafb;
+            display: flex; justify-content: center; align-items: center; z-index: 2000;
+        }
+
+        .auth-box {
+            background: white; padding: 40px 30px; border-radius: 24px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.08); width: 100%; max-width: 400px;
+            text-align: center; border: 1px solid var(--border-color);
+        }
+
+        .logo-img { width: 85px; height: 85px; border-radius: 50%; object-fit: cover; margin-bottom: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+        .auth-box h2 { font-size: 22px; font-weight: 600; margin-bottom: 5px; color: #111827; }
+        .form-subtitle { font-size: 14px; color: #6b7280; margin-bottom: 25px; }
+
+        .auth-box form { animation: fadeIn 0.4s ease; }
+
+        .input-group { margin-bottom: 15px; text-align: left; }
+        .input-group label { display: block; font-size: 13px; color: #4b5563; margin-bottom: 5px; font-weight: 500; }
+        .input-group input { width: 100%; padding: 14px; border: 1px solid #d1d5db; border-radius: 12px; font-size: 15px; outline: none; transition: 0.3s; background: #f9fafb; }
+        .input-group input:focus { border-color: var(--primary); background: white; box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.1); }
+
+        .btn-submit { width: 100%; padding: 15px; background-color: var(--primary); color: white; border: none; border-radius: 12px; font-size: 16px; font-weight: bold; cursor: pointer; transition: 0.2s; margin-top: 10px; box-shadow: 0 4px 12px rgba(15, 118, 110, 0.2); }
+        .btn-submit:hover { background-color: var(--primary-hover); transform: translateY(-2px); }
+
+        .switch-form-text { margin-top: 20px; font-size: 14px; color: #6b7280; }
+        .switch-form-text span { color: var(--primary); font-weight: 600; cursor: pointer; transition: 0.2s; }
+        .switch-form-text span:hover { text-decoration: underline; color: var(--primary-hover); }
+
+        .msg-alert { padding: 12px; border-radius: 8px; font-size: 14px; margin-bottom: 15px; display: none; font-weight: 500; animation: fadeIn 0.3s ease; }
+        .msg-error { background: #fee2e2; color: #b91c1c; border: 1px solid #fecaca; }
+
+        /* --- SCREEN 2: CHAT INTERFACE --- */
+        #app-container { display: none; flex-direction: column; height: 100%; position: relative; }
+
+        /* SIDEBAR (MENU) */
+        .sidebar { position: fixed; top: 0; left: 0; bottom: 0; width: 280px; background-color: var(--bg-sidebar); color: var(--text-light); display: flex; flex-direction: column; padding: 15px 10px; transform: translateX(-100%); transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); z-index: 1000; }
+        .sidebar.open { transform: translateX(0); }
+        .sidebar-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.4); z-index: 999; display: none; opacity: 0; transition: opacity 0.3s; }
+        .sidebar-overlay.open { display: block; opacity: 1; }
+
+        .new-chat-btn { background: transparent; border: 1px solid #4a4a4a; color: white; padding: 12px 15px; border-radius: 8px; text-align: left; cursor: pointer; display: flex; align-items: center; gap: 12px; font-size: 15px; font-weight: 500; transition: 0.2s; }
+        .new-chat-btn:hover { background-color: var(--sidebar-hover); }
+
+        .history-section { flex: 1; overflow-y: auto; margin-top: 25px; }
+        .history-title { font-size: 12px; color: #8e8ea0; margin-bottom: 15px; padding-left: 15px; font-weight: 600; }
+        .history-item { padding: 12px 15px; border-radius: 8px; font-size: 14px; cursor: pointer; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: #ececf1; transition: 0.2s; }
+        .history-item:hover { background-color: var(--sidebar-hover); }
+
+        /* SEHEMU YA LOGOUT (CHINI YA MENU) */
+        .sidebar-footer { padding-top: 15px; border-top: 1px solid #333; margin-top: auto; display: flex; flex-direction: column; gap: 10px; }
+        .user-info { font-size: 13px; color: #a1a1aa; padding-left: 5px; font-weight: 500; display: flex; align-items: center; gap: 8px; }
+        .logout-btn { background: #dc2626; color: white; border: none; padding: 12px; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 14px; transition: 0.2s; display: flex; justify-content: center; align-items: center; gap: 8px; }
+        .logout-btn:hover { background: #b91c1c; }
+
+        /* HEADER */
+        .header { flex: 0 0 60px; display: flex; align-items: center; justify-content: space-between; padding: 0 15px; background: white; border-bottom: 1px solid var(--border-color); z-index: 10; }
+        .menu-btn { font-size: 24px; background: none; border: none; cursor: pointer; color: #374151; padding: 5px; border-radius: 8px; }
+        .header-title { font-weight: 600; font-size: 16px; display: flex; align-items: center; gap: 8px; }
+        .header-logo { width: 32px; height: 32px; border-radius: 50%; object-fit: cover; }
+
+        /* CHAT WINDOW */
+        .chat-window { flex: 1 1 auto; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; align-items: center; scroll-behavior: smooth; }
+        
+        .empty-state { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; opacity: 1; transition: 0.3s; margin-top: 50px; }
+        .empty-state.hidden { display: none; }
+        .empty-state img { width: 70px; height: 70px; border-radius: 50%; margin-bottom: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+        .empty-state h2 { font-size: 24px; margin-bottom: 5px; color: var(--text-main); }
+        .empty-state p { color: #6b7280; font-size: 15px; }
+
+        /* MESEJI ROWS */
+        .message-row { width: 100%; max-width: 768px; display: flex; margin-bottom: 24px; animation: fadeIn 0.3s ease; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        
+        .message-row.user { justify-content: flex-end; }
+        .message-row.user .msg-content { background-color: var(--user-bubble); padding: 12px 20px; border-radius: 24px; font-size: 16px; max-width: 75%; line-height: 1.5; }
+        
+        .message-row.bot { justify-content: flex-start; }
+        .message-row.bot .msg-content { display: flex; gap: 15px; font-size: 16px; max-width: 90%; line-height: 1.6; }
+        
+        .bot-avatar { width: 34px; height: 34px; border-radius: 50%; border: 1px solid #e5e5e5; object-fit: cover; }
+        .bot-text { padding-top: 5px; }
+
+        .cursor { display: inline-block; width: 8px; height: 16px; background-color: var(--text-main); border-radius: 50%; animation: blink 0.8s infinite; vertical-align: middle; margin-left: 4px; }
+        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+
+        /* INPUT AREA YA CHINI */
+        .input-area-wrapper { flex: 0 0 auto; padding: 10px 20px 20px 20px; display: flex; flex-direction: column; align-items: center; background: white; }
+        
+        .suggestions { display: flex; gap: 10px; margin-bottom: 15px; flex-wrap: wrap; justify-content: center; max-width: 768px; }
+        .suggest-btn { background: white; border: 1px solid #e5e5e5; padding: 10px 18px; border-radius: 20px; font-size: 14px; color: #374151; cursor: pointer; transition: 0.2s; box-shadow: 0 2px 5px rgba(0,0,0,0.02); }
+        .suggest-btn:hover { background: #f9f9f9; transform: translateY(-1px); border-color: #d1d5db; }
+
+        .input-box { max-width: 768px; width: 100%; position: relative; background: #f4f4f4; border-radius: 24px; display: flex; align-items: center; padding: 8px 15px; border: 1px solid transparent; transition: 0.3s; }
+        .input-box:focus-within { border-color: #d1d5db; background: white; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+        .input-box input { width: 100%; padding: 12px 10px; border: none; background: transparent; font-size: 16px; outline: none; }
+        
+        .send-btn { background: var(--primary); color: white; border: none; width: 36px; height: 36px; border-radius: 50%; cursor: pointer; display: flex; justify-content: center; align-items: center; font-size: 18px; transition: 0.2s; }
+        .send-btn:hover { background: var(--primary-hover); }
+        .send-btn:disabled { background: #ccc; cursor: not-allowed; }
+        
+        .footer-text { font-size: 11px; color: #9ca3af; margin-top: 10px; }
+    </style>
+</head>
+<body>
+
+    <!-- SCREEN 1: Kujisajili & Kuingia -->
+    <div id="auth-screen">
+        <div class="auth-box">
+            <img src="https://cdn.phototourl.com/free/2026-05-04-c22d6ef4-a650-4e8d-b9bb-96444def138b.jpg" class="logo-img">
+            <h2>Chat Bot Hospital</h2>
+            <div id="msg-box" class="msg-alert"></div>
+
+            <!-- Fomu ya Kujisajili (Default) -->
+            <form id="register-form">
+                <p class="form-subtitle">Jisajili mara moja kuanza mazungumzo</p>
+                <div class="input-group">
+                    <label>Majina Matatu</label>
+                    <input type="text" id="reg-name" placeholder="Mf. John Doe Smith" required>
+                </div>
+                <div class="input-group">
+                    <label>Namba ya Simu</label>
+                    <input type="tel" id="reg-phone" placeholder="Mf. 07XX XXX XXX" required>
+                </div>
+                <div class="input-group">
+                    <label>Mahali Unapoishi</label>
+                    <input type="text" id="reg-location" placeholder="Mf. Dar es Salaam" required>
+                </div>
+                <button type="submit" class="btn-submit">Jisajili & Ingia Moja Kwa Moja</button>
+                <p class="switch-form-text">Je, unayo akaunti tayari? <span onclick="toggleForms('login')">Ingia hapa</span></p>
+            </form>
+
+            <!-- Fomu ya Kuingia (Imefichwa) -->
+            <form id="login-form" style="display: none;">
+                <p class="form-subtitle">Karibu tena! Ingia kwenye mfumo</p>
+                <div class="input-group">
+                    <label>Majina Matatu (Kama ulivyojisajili)</label>
+                    <input type="text" id="log-name" placeholder="Mf. John Doe Smith" required>
+                </div>
+                <div class="input-group">
+                    <label>Namba ya Simu</label>
+                    <input type="tel" id="log-phone" placeholder="Mf. 07XX XXX XXX" required>
+                </div>
+                <button type="submit" class="btn-submit">Ingia Kwenye Mfumo</button>
+                <p class="switch-form-text">Hujasajiliwa bado? <span onclick="toggleForms('register')">Jisajili hapa</span></p>
+            </form>
+        </div>
+    </div>
+
+    <!-- SCREEN 2: CHAT INTERFACE -->
+    <div id="app-container">
+        
+        <!-- Sidebar Menu -->
+        <div class="sidebar-overlay" id="sidebar-overlay" onclick="closeMenu()"></div>
+        <aside class="sidebar" id="sidebar">
+            <button class="new-chat-btn" onclick="startNewChat()">
+                <span style="font-size: 18px;">+</span> Anza Upya
+            </button>
+            <div class="history-section">
+                <div class="history-title">MASWALI YA NYUMA</div>
+                <div id="history-list"></div>
+            </div>
+
+            <!-- LOGOUT SECTION YA CHINI -->
+            <div class="sidebar-footer">
+                <div class="user-info" id="sidebar-user-info">👤 Mtumiaji</div>
+                <button class="logout-btn" onclick="logoutSystem()">
+                    Toka Nje (Logout)
+                </button>
+            </div>
+        </aside>
+
+        <!-- Header -->
+        <header class="header">
+            <div style="display: flex; align-items: center; gap: 10px;">
+                <button class="menu-btn" onclick="openMenu()">☰</button>
+                <div class="header-title">
+                    <img src="https://cdn.phototourl.com/free/2026-05-04-c22d6ef4-a650-4e8d-b9bb-96444def138b.jpg" class="header-logo">
+                    Chat Bot Hospital
+                </div>
+            </div>
+        </header>
+
+        <!-- Chat Window -->
+        <div class="chat-window" id="chat-window">
+            <div class="empty-state" id="empty-state">
+                <img src="https://cdn.phototourl.com/free/2026-05-04-c22d6ef4-a650-4e8d-b9bb-96444def138b.jpg">
+                <h2 id="welcome-text">Karibu</h2>
+                <p>Nikusaidie nini leo?</p>
+            </div>
+        </div>
+
+        <!-- Input Area (Fixed chini) -->
+        <div class="input-area-wrapper">
+            <div class="suggestions" id="suggestions-box"></div>
+            
+            <div class="input-box">
+                <input type="text" id="user-input" placeholder="Andika hapa... Mf. Nina shida..." autocomplete="off">
+                <button class="send-btn" id="send-btn" onclick="handleSend()">↑</button>
+            </div>
+            <div class="footer-text">Chat Bot inaweza kukosea wakati mwingine. Tafadhali hakiki taarifa.</div>
+        </div>
+    </div>
+
+    <!-- JAVASCRIPT LOGIC -->
+    <script>
+        const authScreen = document.getElementById('auth-screen');
+        const appContainer = document.getElementById('app-container');
+        const loginForm = document.getElementById('login-form');
+        const registerForm = document.getElementById('register-form');
+        const msgBox = document.getElementById('msg-box');
+        const chatWindow = document.getElementById('chat-window');
+        const userInput = document.getElementById('user-input');
+        const sendBtn = document.getElementById('send-btn');
+        const emptyState = document.getElementById('empty-state');
+        const suggestionsBox = document.getElementById('suggestions-box');
+        const historyList = document.getElementById('history-list');
+        const welcomeText = document.getElementById('welcome-text');
+        const sidebarUserInfo = document.getElementById('sidebar-user-info');
+
+        const logoUrl = "https://cdn.phototourl.com/free/2026-05-04-c22d6ef4-a650-4e8d-b9bb-96444def138b.jpg";
+        
+        let isTyping = false;
+        let currentUser = null; 
+        let hasStartedChat = false;
+
+        const suggestions =["Huduma za NHIF", "Ratiba ya Daktari", "Muda wa Wagonjwa", "Majibu ya Maabara"];
+        let usersDB = JSON.parse(localStorage.getItem('hospitalUsers')) ||[];
+
+        // 1. KUBADILI FOMU (REGISTER/LOGIN)
+        function toggleForms(formType) {
+            msgBox.style.display = 'none';
+            if (formType === 'login') {
+                registerForm.style.display = 'none';
+                loginForm.style.display = 'block';
+            } else {
+                loginForm.style.display = 'none';
+                registerForm.style.display = 'block';
+            }
+        }
+
+        function showMessage(msg, isError = false) {
+            msgBox.innerText = msg;
+            msgBox.style.display = 'block';
+            msgBox.className = 'msg-alert ' + (isError ? 'msg-error' : 'msg-success');
+        }
+
+        // 2. KUSAJILI NA KUINGIA MOJA KWA MOJA
+        registerForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const name = document.getElementById('reg-name').value.trim();
+            const phone = document.getElementById('reg-phone').value.trim();
+            const location = document.getElementById('reg-location').value.trim();
+
+            if (usersDB.find(u => u.phone === phone)) {
+                showMessage("Namba hii inatumika. Tafadhali bonyeza 'Ingia hapa' chini.", true);
+                return;
+            }
+
+            usersDB.push({ name, phone, location });
+            localStorage.setItem('hospitalUsers', JSON.stringify(usersDB));
+            
+            enterSystem(name);
+            registerForm.reset();
+        });
+
+        // 3. KUINGIA (LOGIN)
+        loginForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const name = document.getElementById('log-name').value.trim();
+            const phone = document.getElementById('log-phone').value.trim();
+            const user = usersDB.find(u => u.phone === phone && u.name.toLowerCase() === name.toLowerCase());
+
+            if (user) {
+                enterSystem(user.name);
+                loginForm.reset();
+            } else {
+                showMessage("Akaunti haijapatikana. Hakikisha majina/namba ipo sahihi.", true);
+            }
+        });
+
+        // 4. KUINGIZA USER KWENYE MFUMO KUU
+        function enterSystem(fullName) {
+            currentUser = fullName;
+            authScreen.style.display = 'none'; 
+            appContainer.style.display = 'flex'; 
+            
+            const firstName = fullName.split(' ')[0];
+            welcomeText.innerText = `Karibu, ${firstName}`;
+            sidebarUserInfo.innerText = `👤 ${fullName}`;
+            
+            loadSuggestions(); 
+        }
+
+        // 5. LOGOUT (KUTOKA KWENYE MFUMO)
+        function logoutSystem() {
+            currentUser = null;
+            closeMenu();
+            appContainer.style.display = 'none';
+            authScreen.style.display = 'flex';
+            toggleForms('login'); // Tunamuweka upande wa Login kwasababu ana akaunti tayari
+            
+            // Futa kioo cha chat ili akirudi kianze upya
+            chatWindow.innerHTML = '';
+            chatWindow.appendChild(emptyState); 
+            emptyState.classList.remove('hidden');
+            hasStartedChat = false;
+        }
+
+        // 6. SIDEBAR MENU
+        function openMenu() {
+            document.getElementById('sidebar').classList.add('open');
+            document.getElementById('sidebar-overlay').classList.add('open');
+        }
+        function closeMenu() {
+            document.getElementById('sidebar').classList.remove('open');
+            document.getElementById('sidebar-overlay').classList.remove('open');
+        }
+
+        function loadSuggestions() {
+            suggestionsBox.innerHTML = suggestions.map(s => 
+                `<button class="suggest-btn" onclick="sendSuggested('${s}')">${s}</button>`
+            ).join('');
+        }
+
+        function startNewChat() {
+            closeMenu();
+            chatWindow.innerHTML = '';
+            chatWindow.appendChild(emptyState); 
+            emptyState.classList.remove('hidden');
+            hasStartedChat = false;
+            loadSuggestions();
+        }
+
+        // 7. KUTUMA UJUMBE
+        userInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter' && !isTyping) handleSend();
+        });
+
+        function sendSuggested(text) {
+            if(isTyping) return;
+            userInput.value = text;
+            handleSend();
+        }
+
+        function handleSend() {
+            const text = userInput.value.trim();
+            if (!text || isTyping) return;
+
+            if (!hasStartedChat) {
+                emptyState.classList.add('hidden');
+                suggestionsBox.innerHTML = '';
+                hasStartedChat = true;
+            }
+
+            appendMessage(text, 'user', false);
+            userInput.value = '';
+            sendBtn.disabled = true;
+
+            setTimeout(() => {
+                const reply = getBotResponse(text);
+                appendMessage(reply, 'bot', true); 
+                saveToHistory(text, reply); // Tunza swali na jibu
+            }, 600);
+        }
+
+        function appendMessage(text, sender, useTypingEffect) {
+            const row = document.createElement('div');
+            row.classList.add('message-row', sender);
+
+            if (sender === 'user') {
+                const bubble = document.createElement('div');
+                bubble.classList.add('msg-content');
+                bubble.innerText = text;
+                row.appendChild(bubble);
+                chatWindow.appendChild(row);
+                scrollToBottom();
+            } else {
+                const content = document.createElement('div');
+                content.classList.add('msg-content');
+
+                const avatar = document.createElement('img');
+                avatar.src = logoUrl;
+                avatar.classList.add('bot-avatar');
+
+                const textBox = document.createElement('div');
+                textBox.classList.add('bot-text');
+
+                content.appendChild(avatar);
+                content.appendChild(textBox);
+                row.appendChild(content);
+                chatWindow.appendChild(row);
+
+                if (useTypingEffect) {
+                    isTyping = true;
+                    typeHTML(textBox, text);
+                } else {
+                    textBox.innerHTML = text;
+                    scrollToBottom();
+                }
+            }
+        }
+
+        function typeHTML(element, htmlText) {
+            let i = 0;
+            function type() {
+                if (i < htmlText.length) {
+                    if (htmlText.charAt(i) === '<') {
+                        let tagEnd = htmlText.indexOf('>', i);
+                        if (tagEnd !== -1) i = tagEnd;
+                    }
+                    i++;
+                    element.innerHTML = htmlText.slice(0, i) + '<span class="cursor"></span>';
+                    scrollToBottom();
+                    setTimeout(type, 15);
+                } else {
+                    element.innerHTML = htmlText;
+                    isTyping = false;
+                    sendBtn.disabled = false;
+                    scrollToBottom();
+                }
+            }
+            type();
+        }
+
+        function scrollToBottom() {
+            chatWindow.scrollTop = chatWindow.scrollHeight;
+        }
+
+        // 8. AKILI YA BOT (KUTAJA JINA NA KUULIZA MASWALI YANAYOPENDWA)
+        function getBotResponse(input) {
+            let msg = input.toLowerCase();
+            let firstName = currentUser ? currentUser.split(' ')[0] : 'Mtumiaji';
+
+            // Salamu na Shida (Kama ulivyoomba)
+            if (msg.includes('mambo') || msg.includes('vipi') || msg.includes('habari') || msg.includes('niaje') || msg.includes('mzuka')) {
+                return `Habari <b>${firstName}</b>! Karibu sana kwenye huduma zetu. Nikusaidie nini leo?<br><br>Maswali yanayopendwa na watu:<br>• <i>Kumuona daktari</i><br>• <i>Huduma za NHIF</i><br>• <i>Majibu ya Maabara</i>`;
+            }
+            
+            if (msg.includes('shida') || msg.includes('naumwa') || msg.includes('msaada')) {
+                return `Pole sana <b>${firstName}</b> kwa changamoto unayopitia. Nipo hapa kukusaidia. Je, ungependa kupanga ratiba ya kumuona Daktari wetu au unataka ushauri mwingine?`;
+            }
+            
+            // Maswali ya kikazi
+            if (msg.includes('nhif') || msg.includes('bima')) return `<b>${firstName}</b>, tunapokea kadi za NHIF. Tafadhali fika mapokezi na kadi iliyo hai pamoja na kitambulisho chako.`;
+            if (msg.includes('daktari') || msg.includes('miadi') || msg.includes('ratiba')) return `Ili kumuona daktari, fika mapokezi mapema. Madaktari wetu wapo tayari kuanzia saa 2:00 Asubuhi kila siku.`;
+            if (msg.includes('muda') || msg.includes('wagonjwa')) return "Muda wa kumuona mgonjwa aliyelazwa ni:<br>• Asubuhi: 12:00 - 02:00<br>• Mchana: 07:00 - 08:00<br>• Jioni: 10:00 - 12:00";
+            if (msg.includes('pdf') || msg.includes('majibu') || msg.includes('maabara')) return "Majibu ya maabara yapo salama. Hivi karibuni utaweza kupakua PDF ya majibu yako moja kwa moja kupitia mfumo huu.";
+            
+            // Swali gumu
+            return `Samahani <b>${firstName}</b>, sijaelewa vizuri swali lako. Unaweza kuniuliza kuhusu huduma za <b>NHIF</b>, ratiba za <b>Daktari</b>, au jinsi ya kupata <b>Majibu ya Maabara</b>.`;
+        }
+
+        // 9. HISTORY NA KUREJESHA CHAT YA NYUMA
+        function saveToHistory(userText, botReply) {
+            const div = document.createElement('div');
+            div.classList.add('history-item');
+            div.innerHTML = `💬 ${userText}`;
+            
+            // Akigusa swali kwenye menu, linafunguka upya
+            div.onclick = () => restoreChat(userText, botReply);
+            
+            historyList.prepend(div);
+        }
+
+        // Kufungua swali alilochagua kwenye history
+        function restoreChat(userText, botReply) {
+            closeMenu(); // Funga Menu
+            chatWindow.innerHTML = ''; // Safisha kioo chochote kilichopo
+            
+            emptyState.classList.add('hidden'); // Ficha maneno ya mwanzo
+            suggestionsBox.innerHTML = ''; // Ficha maswali elekezi
+            hasStartedChat = true;
+
+            // Weka swali alilouliza na Jibu alilopewa hapo awali
+            appendMessage(userText, 'user', false);
+            appendMessage(botReply, 'bot', false);
+        }
+
+    </script>
+</body>
+</html>
