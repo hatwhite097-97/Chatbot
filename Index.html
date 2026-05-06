@@ -5,11 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chat Bot Hospital</title>
     <style>
-        /* MUONEKANO WA KISASA KABISA (LATEST UI) */
+        /* MUONEKANO WA KISASA KABISA (PREMIUM UI) */
         :root {
             --bg-main: #ffffff;
             --bg-sidebar: #171717;
-            --sidebar-hover: #2f2f2f;
+            --sidebar-hover: #202123;
             --primary: #0f766e; 
             --primary-hover: #0d5f58;
             --user-bubble: #f4f4f4;
@@ -29,24 +29,36 @@
         }
 
         .auth-box {
-            background: white; padding: 40px 30px; border-radius: 24px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.08); width: 100%; max-width: 400px;
+            background: white; padding: 40px 35px; border-radius: 24px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.06); width: 100%; max-width: 420px;
             text-align: center; border: 1px solid var(--border-color);
         }
 
-        .logo-img { width: 85px; height: 85px; border-radius: 50%; object-fit: cover; margin-bottom: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
-        .auth-box h2 { font-size: 22px; font-weight: 600; margin-bottom: 5px; color: #111827; }
+        .logo-img { width: 85px; height: 85px; border-radius: 50%; object-fit: cover; margin-bottom: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); border: 2px solid #f3f4f6; }
+        .auth-box h2 { font-size: 24px; font-weight: 700; margin-bottom: 5px; color: #111827; letter-spacing: -0.5px; }
         .form-subtitle { font-size: 14px; color: #6b7280; margin-bottom: 25px; }
 
         .auth-box form { animation: fadeIn 0.4s ease; }
 
         .input-group { margin-bottom: 15px; text-align: left; }
-        .input-group label { display: block; font-size: 13px; color: #4b5563; margin-bottom: 5px; font-weight: 500; }
-        .input-group input { width: 100%; padding: 14px; border: 1px solid #d1d5db; border-radius: 12px; font-size: 15px; outline: none; transition: 0.3s; background: #f9fafb; }
-        .input-group input:focus { border-color: var(--primary); background: white; box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.1); }
+        .input-group label { display: block; font-size: 13px; color: #374151; margin-bottom: 6px; font-weight: 600; }
+        .input-group input { width: 100%; padding: 14px 16px; border: 1px solid #d1d5db; border-radius: 12px; font-size: 15px; outline: none; transition: 0.3s; background: #f9fafb; }
+        .input-group input:focus { border-color: var(--primary); background: white; box-shadow: 0 0 0 4px rgba(15, 118, 110, 0.1); }
 
-        .btn-submit { width: 100%; padding: 15px; background-color: var(--primary); color: white; border: none; border-radius: 12px; font-size: 16px; font-weight: bold; cursor: pointer; transition: 0.2s; margin-top: 10px; box-shadow: 0 4px 12px rgba(15, 118, 110, 0.2); }
-        .btn-submit:hover { background-color: var(--primary-hover); transform: translateY(-2px); }
+        .btn-submit { width: 100%; padding: 14px; background-color: var(--primary); color: white; border: none; border-radius: 12px; font-size: 16px; font-weight: 600; cursor: pointer; transition: 0.2s; box-shadow: 0 4px 12px rgba(15, 118, 110, 0.2); margin-top: 5px; }
+        .btn-submit:hover { background-color: var(--primary-hover); transform: translateY(-1px); }
+
+        /* MBWEMBWE ZA GOOGLE BUTTON */
+        .divider { display: flex; align-items: center; text-align: center; margin: 24px 0; color: #9ca3af; font-size: 12px; font-weight: 600; }
+        .divider::before, .divider::after { content: ''; flex: 1; border-bottom: 1px solid #e5e7eb; }
+        .divider::before { margin-right: 12px; }
+        .divider::after { margin-left: 12px; }
+
+        .btn-google {
+            width: 100%; padding: 12px; background: white; border: 1px solid #d1d5db; border-radius: 12px;
+            font-size: 15px; font-weight: 600; color: #374151; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; transition: 0.2s;
+        }
+        .btn-google:hover { background: #f9fafb; border-color: #9ca3af; }
 
         .switch-form-text { margin-top: 20px; font-size: 14px; color: #6b7280; }
         .switch-form-text span { color: var(--primary); font-weight: 600; cursor: pointer; transition: 0.2s; }
@@ -59,7 +71,7 @@
         #app-container { display: none; flex-direction: column; height: 100%; position: relative; }
 
         /* SIDEBAR (MENU) */
-        .sidebar { position: fixed; top: 0; left: 0; bottom: 0; width: 280px; background-color: var(--bg-sidebar); color: var(--text-light); display: flex; flex-direction: column; padding: 15px 10px; transform: translateX(-100%); transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); z-index: 1000; }
+        .sidebar { position: fixed; top: 0; left: 0; bottom: 0; width: 280px; background-color: var(--bg-sidebar); color: var(--text-light); display: flex; flex-direction: column; padding: 15px 12px; transform: translateX(-100%); transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); z-index: 1000; }
         .sidebar.open { transform: translateX(0); }
         .sidebar-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.4); z-index: 999; display: none; opacity: 0; transition: opacity 0.3s; }
         .sidebar-overlay.open { display: block; opacity: 1; }
@@ -68,15 +80,19 @@
         .new-chat-btn:hover { background-color: var(--sidebar-hover); }
 
         .history-section { flex: 1; overflow-y: auto; margin-top: 25px; }
-        .history-title { font-size: 12px; color: #8e8ea0; margin-bottom: 15px; padding-left: 15px; font-weight: 600; }
+        .history-title { font-size: 12px; color: #8e8ea0; margin-bottom: 10px; padding-left: 15px; font-weight: 600; letter-spacing: 0.5px; }
         .history-item { padding: 12px 15px; border-radius: 8px; font-size: 14px; cursor: pointer; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: #ececf1; transition: 0.2s; }
         .history-item:hover { background-color: var(--sidebar-hover); }
 
-        /* SEHEMU YA LOGOUT (CHINI YA MENU) */
-        .sidebar-footer { padding-top: 15px; border-top: 1px solid #333; margin-top: auto; display: flex; flex-direction: column; gap: 10px; }
-        .user-info { font-size: 13px; color: #a1a1aa; padding-left: 5px; font-weight: 500; display: flex; align-items: center; gap: 8px; }
-        .logout-btn { background: #dc2626; color: white; border: none; padding: 12px; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 14px; transition: 0.2s; display: flex; justify-content: center; align-items: center; gap: 8px; }
-        .logout-btn:hover { background: #b91c1c; }
+        /* SEHEMU YA LOGOUT (CHATGPT STYLE) */
+        .sidebar-footer { padding-top: 10px; border-top: 1px solid #333; margin-top: auto; }
+        
+        .logout-btn {
+            background: transparent; color: #ececf1; border: none; padding: 12px 15px; border-radius: 8px; cursor: pointer; font-weight: 500; font-size: 14px; transition: 0.2s; display: flex; align-items: center; gap: 12px; width: 100%; text-align: left;
+        }
+        .logout-btn svg { stroke: #9ca3af; transition: 0.2s; }
+        .logout-btn:hover { background: var(--sidebar-hover); color: #ef4444; }
+        .logout-btn:hover svg { stroke: #ef4444; }
 
         /* HEADER */
         .header { flex: 0 0 60px; display: flex; align-items: center; justify-content: space-between; padding: 0 15px; background: white; border-bottom: 1px solid var(--border-color); z-index: 10; }
@@ -90,7 +106,7 @@
         .empty-state { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; opacity: 1; transition: 0.3s; margin-top: 50px; }
         .empty-state.hidden { display: none; }
         .empty-state img { width: 70px; height: 70px; border-radius: 50%; margin-bottom: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
-        .empty-state h2 { font-size: 24px; margin-bottom: 5px; color: var(--text-main); }
+        .empty-state h2 { font-size: 24px; margin-bottom: 5px; color: var(--text-main); font-weight: 700; }
         .empty-state p { color: #6b7280; font-size: 15px; }
 
         /* MESEJI ROWS */
@@ -98,7 +114,7 @@
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         
         .message-row.user { justify-content: flex-end; }
-        .message-row.user .msg-content { background-color: var(--user-bubble); padding: 12px 20px; border-radius: 24px; font-size: 16px; max-width: 75%; line-height: 1.5; }
+        .message-row.user .msg-content { background-color: var(--user-bubble); padding: 12px 20px; border-radius: 24px; font-size: 16px; max-width: 75%; line-height: 1.5; color: #111827; }
         
         .message-row.bot { justify-content: flex-start; }
         .message-row.bot .msg-content { display: flex; gap: 15px; font-size: 16px; max-width: 90%; line-height: 1.6; }
@@ -113,18 +129,18 @@
         .input-area-wrapper { flex: 0 0 auto; padding: 10px 20px 20px 20px; display: flex; flex-direction: column; align-items: center; background: white; }
         
         .suggestions { display: flex; gap: 10px; margin-bottom: 15px; flex-wrap: wrap; justify-content: center; max-width: 768px; }
-        .suggest-btn { background: white; border: 1px solid #e5e5e5; padding: 10px 18px; border-radius: 20px; font-size: 14px; color: #374151; cursor: pointer; transition: 0.2s; box-shadow: 0 2px 5px rgba(0,0,0,0.02); }
+        .suggest-btn { background: white; border: 1px solid #e5e5e5; padding: 10px 18px; border-radius: 20px; font-size: 14px; color: #374151; cursor: pointer; transition: 0.2s; box-shadow: 0 2px 5px rgba(0,0,0,0.02); font-weight: 500; }
         .suggest-btn:hover { background: #f9f9f9; transform: translateY(-1px); border-color: #d1d5db; }
 
         .input-box { max-width: 768px; width: 100%; position: relative; background: #f4f4f4; border-radius: 24px; display: flex; align-items: center; padding: 8px 15px; border: 1px solid transparent; transition: 0.3s; }
         .input-box:focus-within { border-color: #d1d5db; background: white; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
         .input-box input { width: 100%; padding: 12px 10px; border: none; background: transparent; font-size: 16px; outline: none; }
         
-        .send-btn { background: var(--primary); color: white; border: none; width: 36px; height: 36px; border-radius: 50%; cursor: pointer; display: flex; justify-content: center; align-items: center; font-size: 18px; transition: 0.2s; }
-        .send-btn:hover { background: var(--primary-hover); }
-        .send-btn:disabled { background: #ccc; cursor: not-allowed; }
+        .send-btn { background: #111827; color: white; border: none; width: 36px; height: 36px; border-radius: 50%; cursor: pointer; display: flex; justify-content: center; align-items: center; font-size: 18px; transition: 0.2s; }
+        .send-btn:hover { background: #374151; }
+        .send-btn:disabled { background: #d1d5db; cursor: not-allowed; }
         
-        .footer-text { font-size: 11px; color: #9ca3af; margin-top: 10px; }
+        .footer-text { font-size: 11px; color: #9ca3af; margin-top: 10px; text-align: center; }
     </style>
 </head>
 <body>
@@ -140,18 +156,31 @@
             <form id="register-form">
                 <p class="form-subtitle">Jisajili mara moja kuanza mazungumzo</p>
                 <div class="input-group">
-                    <label>Majina Matatu</label>
+                    <label>Majina Matatu / Full Name</label>
                     <input type="text" id="reg-name" placeholder="Mf. John Doe Smith" required>
                 </div>
                 <div class="input-group">
-                    <label>Namba ya Simu</label>
+                    <label>Namba ya Simu / Phone</label>
                     <input type="tel" id="reg-phone" placeholder="Mf. 07XX XXX XXX" required>
                 </div>
                 <div class="input-group">
-                    <label>Mahali Unapoishi</label>
+                    <label>Mahali Unapoishi / Location</label>
                     <input type="text" id="reg-location" placeholder="Mf. Dar es Salaam" required>
                 </div>
-                <button type="submit" class="btn-submit">Jisajili & Ingia Moja Kwa Moja</button>
+                <button type="submit" class="btn-submit">Jisajili & Ingia</button>
+                
+                <!-- Google Button (Mbwembwe za UI) -->
+                <div class="divider">AU ENDELEA NA</div>
+                <button type="button" class="btn-google" onclick="alert('Kipengele hiki cha Google ni mbwembwe za UI kama ulivyoomba! 😉 Inaleta muonekano wa kisasa zaidi.')">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="22px" height="22px">
+                        <path fill="#FFC107" d="M43.611,20.083H42V20H24v8h11.303c-1.649,4.657-6.08,8-11.303,8c-6.627,0-12-5.373-12-12c0-6.627,5.373-12,12-12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C12.955,4,4,12.955,4,24c0,11.045,8.955,20,20,20c11.045,0,20-8.955,20-20C44,22.659,43.862,21.35,43.611,20.083z"/>
+                        <path fill="#FF3D00" d="M6.306,14.691l6.571,4.819C14.655,15.108,18.961,12,24,12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C16.318,4,9.656,8.337,6.306,14.691z"/>
+                        <path fill="#4CAF50" d="M24,44c5.166,0,9.86-1.977,13.409-5.192l-6.19-5.238C29.211,35.091,26.715,36,24,36c-5.202,0-9.619-3.317-11.283-7.946l-6.522,5.025C9.505,39.556,16.227,44,24,44z"/>
+                        <path fill="#1976D2" d="M43.611,20.083H42V20H24v8h11.303c-0.792,2.237-2.231,4.166-4.087,5.571c0.001-0.001,0.002-0.001,0.003-0.002l6.19,5.238C36.971,39.205,44,34,44,24C44,22.659,43.862,21.35,43.611,20.083z"/>
+                    </svg>
+                    Sign in with Google
+                </button>
+
                 <p class="switch-form-text">Je, unayo akaunti tayari? <span onclick="toggleForms('login')">Ingia hapa</span></p>
             </form>
 
@@ -167,6 +196,19 @@
                     <input type="tel" id="log-phone" placeholder="Mf. 07XX XXX XXX" required>
                 </div>
                 <button type="submit" class="btn-submit">Ingia Kwenye Mfumo</button>
+                
+                <!-- Google Button (Mbwembwe za UI) -->
+                <div class="divider">AU ENDELEA NA</div>
+                <button type="button" class="btn-google" onclick="alert('Kipengele hiki cha Google ni mbwembwe za UI kama ulivyoomba! 😉 Inaleta muonekano wa kisasa zaidi.')">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="22px" height="22px">
+                        <path fill="#FFC107" d="M43.611,20.083H42V20H24v8h11.303c-1.649,4.657-6.08,8-11.303,8c-6.627,0-12-5.373-12-12c0-6.627,5.373-12,12-12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C12.955,4,4,12.955,4,24c0,11.045,8.955,20,20,20c11.045,0,20-8.955,20-20C44,22.659,43.862,21.35,43.611,20.083z"/>
+                        <path fill="#FF3D00" d="M6.306,14.691l6.571,4.819C14.655,15.108,18.961,12,24,12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C16.318,4,9.656,8.337,6.306,14.691z"/>
+                        <path fill="#4CAF50" d="M24,44c5.166,0,9.86-1.977,13.409-5.192l-6.19-5.238C29.211,35.091,26.715,36,24,36c-5.202,0-9.619-3.317-11.283-7.946l-6.522,5.025C9.505,39.556,16.227,44,24,44z"/>
+                        <path fill="#1976D2" d="M43.611,20.083H42V20H24v8h11.303c-0.792,2.237-2.231,4.166-4.087,5.571c0.001-0.001,0.002-0.001,0.003-0.002l6.19,5.238C36.971,39.205,44,34,44,24C44,22.659,43.862,21.35,43.611,20.083z"/>
+                    </svg>
+                    Sign in with Google
+                </button>
+
                 <p class="switch-form-text">Hujasajiliwa bado? <span onclick="toggleForms('register')">Jisajili hapa</span></p>
             </form>
         </div>
@@ -179,18 +221,22 @@
         <div class="sidebar-overlay" id="sidebar-overlay" onclick="closeMenu()"></div>
         <aside class="sidebar" id="sidebar">
             <button class="new-chat-btn" onclick="startNewChat()">
-                <span style="font-size: 18px;">+</span> Anza Upya
+                <span style="font-size: 18px;">+</span> Anza Upya (New Chat)
             </button>
             <div class="history-section">
                 <div class="history-title">MASWALI YA NYUMA</div>
                 <div id="history-list"></div>
             </div>
 
-            <!-- LOGOUT SECTION YA CHINI -->
+            <!-- LOGOUT SECTION YA CHINI (STYLE YA CHATGPT) -->
             <div class="sidebar-footer">
-                <div class="user-info" id="sidebar-user-info">👤 Mtumiaji</div>
                 <button class="logout-btn" onclick="logoutSystem()">
-                    Toka Nje (Logout)
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                        <polyline points="16 17 21 12 16 7"></polyline>
+                        <line x1="21" y1="12" x2="9" y2="12"></line>
+                    </svg>
+                    <span id="sidebar-user-info" style="flex:1; overflow:hidden; text-overflow:ellipsis;">Log out</span>
                 </button>
             </div>
         </aside>
@@ -211,23 +257,23 @@
             <div class="empty-state" id="empty-state">
                 <img src="https://cdn.phototourl.com/free/2026-05-04-c22d6ef4-a650-4e8d-b9bb-96444def138b.jpg">
                 <h2 id="welcome-text">Karibu</h2>
-                <p>Nikusaidie nini leo?</p>
+                <p>Nikusaidie nini leo? / How can I help?</p>
             </div>
         </div>
 
-        <!-- Input Area (Fixed chini) -->
+        <!-- Input Area -->
         <div class="input-area-wrapper">
             <div class="suggestions" id="suggestions-box"></div>
             
             <div class="input-box">
-                <input type="text" id="user-input" placeholder="Andika hapa... Mf. Nina shida..." autocomplete="off">
+                <input type="text" id="user-input" placeholder="Uliza kwa Kiswahili au Kiingereza..." autocomplete="off">
                 <button class="send-btn" id="send-btn" onclick="handleSend()">↑</button>
             </div>
-            <div class="footer-text">Chat Bot inaweza kukosea wakati mwingine. Tafadhali hakiki taarifa.</div>
+            <div class="footer-text">Chat Bot inaweza kukosea. AI systems can make mistakes. Hakiki taarifa.</div>
         </div>
     </div>
 
-    <!-- JAVASCRIPT LOGIC -->
+    <!-- JAVASCRIPT LOGIC (PAMOJA NA KIINGEREZA) -->
     <script>
         const authScreen = document.getElementById('auth-screen');
         const appContainer = document.getElementById('app-container');
@@ -249,10 +295,9 @@
         let currentUser = null; 
         let hasStartedChat = false;
 
-        const suggestions =["Huduma za NHIF", "Ratiba ya Daktari", "Muda wa Wagonjwa", "Majibu ya Maabara"];
+        const suggestions =["Ratiba ya Daktari", "Huduma za NHIF", "Lab Results (PDF)", "Visiting Hours"];
         let usersDB = JSON.parse(localStorage.getItem('hospitalUsers')) ||[];
 
-        // 1. KUBADILI FOMU (REGISTER/LOGIN)
         function toggleForms(formType) {
             msgBox.style.display = 'none';
             if (formType === 'login') {
@@ -261,247 +306,4 @@
             } else {
                 loginForm.style.display = 'none';
                 registerForm.style.display = 'block';
-            }
-        }
-
-        function showMessage(msg, isError = false) {
-            msgBox.innerText = msg;
-            msgBox.style.display = 'block';
-            msgBox.className = 'msg-alert ' + (isError ? 'msg-error' : 'msg-success');
-        }
-
-        // 2. KUSAJILI NA KUINGIA MOJA KWA MOJA
-        registerForm.addEventListener('submit', (e) => {
-            e.preventDefault();
-            const name = document.getElementById('reg-name').value.trim();
-            const phone = document.getElementById('reg-phone').value.trim();
-            const location = document.getElementById('reg-location').value.trim();
-
-            if (usersDB.find(u => u.phone === phone)) {
-                showMessage("Namba hii inatumika. Tafadhali bonyeza 'Ingia hapa' chini.", true);
-                return;
-            }
-
-            usersDB.push({ name, phone, location });
-            localStorage.setItem('hospitalUsers', JSON.stringify(usersDB));
-            
-            enterSystem(name);
-            registerForm.reset();
-        });
-
-        // 3. KUINGIA (LOGIN)
-        loginForm.addEventListener('submit', (e) => {
-            e.preventDefault();
-            const name = document.getElementById('log-name').value.trim();
-            const phone = document.getElementById('log-phone').value.trim();
-            const user = usersDB.find(u => u.phone === phone && u.name.toLowerCase() === name.toLowerCase());
-
-            if (user) {
-                enterSystem(user.name);
-                loginForm.reset();
-            } else {
-                showMessage("Akaunti haijapatikana. Hakikisha majina/namba ipo sahihi.", true);
-            }
-        });
-
-        // 4. KUINGIZA USER KWENYE MFUMO KUU
-        function enterSystem(fullName) {
-            currentUser = fullName;
-            authScreen.style.display = 'none'; 
-            appContainer.style.display = 'flex'; 
-            
-            const firstName = fullName.split(' ')[0];
-            welcomeText.innerText = `Karibu, ${firstName}`;
-            sidebarUserInfo.innerText = `👤 ${fullName}`;
-            
-            loadSuggestions(); 
-        }
-
-        // 5. LOGOUT (KUTOKA KWENYE MFUMO)
-        function logoutSystem() {
-            currentUser = null;
-            closeMenu();
-            appContainer.style.display = 'none';
-            authScreen.style.display = 'flex';
-            toggleForms('login'); // Tunamuweka upande wa Login kwasababu ana akaunti tayari
-            
-            // Futa kioo cha chat ili akirudi kianze upya
-            chatWindow.innerHTML = '';
-            chatWindow.appendChild(emptyState); 
-            emptyState.classList.remove('hidden');
-            hasStartedChat = false;
-        }
-
-        // 6. SIDEBAR MENU
-        function openMenu() {
-            document.getElementById('sidebar').classList.add('open');
-            document.getElementById('sidebar-overlay').classList.add('open');
-        }
-        function closeMenu() {
-            document.getElementById('sidebar').classList.remove('open');
-            document.getElementById('sidebar-overlay').classList.remove('open');
-        }
-
-        function loadSuggestions() {
-            suggestionsBox.innerHTML = suggestions.map(s => 
-                `<button class="suggest-btn" onclick="sendSuggested('${s}')">${s}</button>`
-            ).join('');
-        }
-
-        function startNewChat() {
-            closeMenu();
-            chatWindow.innerHTML = '';
-            chatWindow.appendChild(emptyState); 
-            emptyState.classList.remove('hidden');
-            hasStartedChat = false;
-            loadSuggestions();
-        }
-
-        // 7. KUTUMA UJUMBE
-        userInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter' && !isTyping) handleSend();
-        });
-
-        function sendSuggested(text) {
-            if(isTyping) return;
-            userInput.value = text;
-            handleSend();
-        }
-
-        function handleSend() {
-            const text = userInput.value.trim();
-            if (!text || isTyping) return;
-
-            if (!hasStartedChat) {
-                emptyState.classList.add('hidden');
-                suggestionsBox.innerHTML = '';
-                hasStartedChat = true;
-            }
-
-            appendMessage(text, 'user', false);
-            userInput.value = '';
-            sendBtn.disabled = true;
-
-            setTimeout(() => {
-                const reply = getBotResponse(text);
-                appendMessage(reply, 'bot', true); 
-                saveToHistory(text, reply); // Tunza swali na jibu
-            }, 600);
-        }
-
-        function appendMessage(text, sender, useTypingEffect) {
-            const row = document.createElement('div');
-            row.classList.add('message-row', sender);
-
-            if (sender === 'user') {
-                const bubble = document.createElement('div');
-                bubble.classList.add('msg-content');
-                bubble.innerText = text;
-                row.appendChild(bubble);
-                chatWindow.appendChild(row);
-                scrollToBottom();
-            } else {
-                const content = document.createElement('div');
-                content.classList.add('msg-content');
-
-                const avatar = document.createElement('img');
-                avatar.src = logoUrl;
-                avatar.classList.add('bot-avatar');
-
-                const textBox = document.createElement('div');
-                textBox.classList.add('bot-text');
-
-                content.appendChild(avatar);
-                content.appendChild(textBox);
-                row.appendChild(content);
-                chatWindow.appendChild(row);
-
-                if (useTypingEffect) {
-                    isTyping = true;
-                    typeHTML(textBox, text);
-                } else {
-                    textBox.innerHTML = text;
-                    scrollToBottom();
-                }
-            }
-        }
-
-        function typeHTML(element, htmlText) {
-            let i = 0;
-            function type() {
-                if (i < htmlText.length) {
-                    if (htmlText.charAt(i) === '<') {
-                        let tagEnd = htmlText.indexOf('>', i);
-                        if (tagEnd !== -1) i = tagEnd;
-                    }
-                    i++;
-                    element.innerHTML = htmlText.slice(0, i) + '<span class="cursor"></span>';
-                    scrollToBottom();
-                    setTimeout(type, 15);
-                } else {
-                    element.innerHTML = htmlText;
-                    isTyping = false;
-                    sendBtn.disabled = false;
-                    scrollToBottom();
-                }
-            }
-            type();
-        }
-
-        function scrollToBottom() {
-            chatWindow.scrollTop = chatWindow.scrollHeight;
-        }
-
-        // 8. AKILI YA BOT (KUTAJA JINA NA KUULIZA MASWALI YANAYOPENDWA)
-        function getBotResponse(input) {
-            let msg = input.toLowerCase();
-            let firstName = currentUser ? currentUser.split(' ')[0] : 'Mtumiaji';
-
-            // Salamu na Shida (Kama ulivyoomba)
-            if (msg.includes('mambo') || msg.includes('vipi') || msg.includes('habari') || msg.includes('niaje') || msg.includes('mzuka')) {
-                return `Habari <b>${firstName}</b>! Karibu sana kwenye huduma zetu. Nikusaidie nini leo?<br><br>Maswali yanayopendwa na watu:<br>• <i>Kumuona daktari</i><br>• <i>Huduma za NHIF</i><br>• <i>Majibu ya Maabara</i>`;
-            }
-            
-            if (msg.includes('shida') || msg.includes('naumwa') || msg.includes('msaada')) {
-                return `Pole sana <b>${firstName}</b> kwa changamoto unayopitia. Nipo hapa kukusaidia. Je, ungependa kupanga ratiba ya kumuona Daktari wetu au unataka ushauri mwingine?`;
-            }
-            
-            // Maswali ya kikazi
-            if (msg.includes('nhif') || msg.includes('bima')) return `<b>${firstName}</b>, tunapokea kadi za NHIF. Tafadhali fika mapokezi na kadi iliyo hai pamoja na kitambulisho chako.`;
-            if (msg.includes('daktari') || msg.includes('miadi') || msg.includes('ratiba')) return `Ili kumuona daktari, fika mapokezi mapema. Madaktari wetu wapo tayari kuanzia saa 2:00 Asubuhi kila siku.`;
-            if (msg.includes('muda') || msg.includes('wagonjwa')) return "Muda wa kumuona mgonjwa aliyelazwa ni:<br>• Asubuhi: 12:00 - 02:00<br>• Mchana: 07:00 - 08:00<br>• Jioni: 10:00 - 12:00";
-            if (msg.includes('pdf') || msg.includes('majibu') || msg.includes('maabara')) return "Majibu ya maabara yapo salama. Hivi karibuni utaweza kupakua PDF ya majibu yako moja kwa moja kupitia mfumo huu.";
-            
-            // Swali gumu
-            return `Samahani <b>${firstName}</b>, sijaelewa vizuri swali lako. Unaweza kuniuliza kuhusu huduma za <b>NHIF</b>, ratiba za <b>Daktari</b>, au jinsi ya kupata <b>Majibu ya Maabara</b>.`;
-        }
-
-        // 9. HISTORY NA KUREJESHA CHAT YA NYUMA
-        function saveToHistory(userText, botReply) {
-            const div = document.createElement('div');
-            div.classList.add('history-item');
-            div.innerHTML = `💬 ${userText}`;
-            
-            // Akigusa swali kwenye menu, linafunguka upya
-            div.onclick = () => restoreChat(userText, botReply);
-            
-            historyList.prepend(div);
-        }
-
-        // Kufungua swali alilochagua kwenye history
-        function restoreChat(userText, botReply) {
-            closeMenu(); // Funga Menu
-            chatWindow.innerHTML = ''; // Safisha kioo chochote kilichopo
-            
-            emptyState.classList.add('hidden'); // Ficha maneno ya mwanzo
-            suggestionsBox.innerHTML = ''; // Ficha maswali elekezi
-            hasStartedChat = true;
-
-            // Weka swali alilouliza na Jibu alilopewa hapo awali
-            appendMessage(userText, 'user', false);
-            appendMessage(botReply, 'bot', false);
-        }
-
-    </script>
-</body>
-</html>
+   
